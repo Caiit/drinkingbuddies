@@ -25,7 +25,8 @@ public class Drink {
         this.name = name;
         this.category = category;
         this.alcoholic = alcoholic;
-        this.glass = instructions;
+        this.glass = glass;
+        this.instructions = instructions;
         this.img = img;
         this.ingredients = ingredients;
         this.measures = measures;
@@ -54,6 +55,10 @@ public class Drink {
 
     public String getGlass() {
         return glass;
+    }
+
+    public String getInstructions() {
+        return instructions;
     }
 
     public String getImg() {

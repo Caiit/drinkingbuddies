@@ -8,21 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class ResultActivity extends AppCompatActivity {
 
+    DrinkAdapter adapter;
     String query;
     ArrayList<Drink> drinks;
     @Override
@@ -49,13 +43,17 @@ public class ResultActivity extends AppCompatActivity {
     public void showData(ArrayList<Drink> drinks) {
         this.drinks = drinks;
 
+        // Get the list view and fill it with the drinks
+        ListView drinksListView = (ListView) findViewById(R.id.resultListView);
+        adapter = new DrinkAdapter(this, R.layout.result_listview, drinks);
+        drinksListView.setAdapter(adapter);
+
         // Set image
         for (int i = 0; i < drinks.size(); i++) {
             // Get drink
             Drink drink = drinks.get(i);
             ImageAsyncTask task = new ImageAsyncTask(this);
             task.execute(new ImageTaskParams(i, drink.getImg()));
-            Log.d(String.valueOf(i), "showData: getting image");
         }
     }
 
@@ -63,10 +61,6 @@ public class ResultActivity extends AppCompatActivity {
         if (img != null) {
             drinks.get(pos).setBitImg(img);
         }
-        // Get the list view and fill it with the drinks
-        ListView drinksListView = (ListView) findViewById(R.id.resultListView);
-        DrinkAdapter adapter = new DrinkAdapter(this, R.layout.listview, drinks);
-        drinksListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
 

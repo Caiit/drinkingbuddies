@@ -68,7 +68,7 @@ class DrinkAsyncTask extends AsyncTask<String, Integer, String> {
                     // API always returns 15 ingredients and measures
                     for (int j = 1; j < 16; j++) {
                         String ingredient = drink.getString("strIngredient" + j);
-                        if (ingredient != "") {
+                        if (!ingredient.equals("")) {
                             ingredients.add(ingredient);
                             measures.add(drink.getString("strMeasure" + j));
                         }
