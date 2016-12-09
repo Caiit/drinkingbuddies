@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "431725986534",
+    "firebase_url": "https://drinkingbuddies-e12c8.firebaseio.com",
+    "project_id": "drinkingbuddies-e12c8",
+    "storage_bucket": "drinkingbuddies-e12c8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431725986534:android:99a3fcb0a76efe10",
+        "android_client_info": {
+          "package_name": "com.example.cait.lagrand_pset6"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "431725986534-92204jk6f66j9lggj33d0qas81dvo8st.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cait.lagrand_pset6",
+            "certificate_hash": "88D3848775D1F3619CD3D24BF7863BF3C738874F"
+          }
+        },
+        {
+          "client_id": "431725986534-s6na0edmiivci5r3mkofou59hhrfnqfs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDS-xnE4HY3hrD0DINObd5gEV6J73EcI00"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "431725986534-s6na0edmiivci5r3mkofou59hhrfnqfs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
