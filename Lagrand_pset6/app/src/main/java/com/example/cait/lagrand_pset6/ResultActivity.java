@@ -10,15 +10,21 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ListView;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 public class ResultActivity extends AppCompatActivity {
 
-    DrinkAdapter adapter;
-    String query;
-    ArrayList<Drink> drinks;
+    private DrinkAdapter adapter;
+    private String query;
+    private ArrayList<Drink> drinks;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +69,7 @@ public class ResultActivity extends AppCompatActivity {
         }
         adapter.notifyDataSetChanged();
     }
+
 
     /********************
      * Toolbar methods. *

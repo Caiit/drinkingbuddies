@@ -7,10 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 
 
@@ -18,15 +23,20 @@ public class DrinkAdapter extends ArrayAdapter<Drink> {
 
     Context context;
 
+    private DatabaseReference firebaseDatabaseReference;
+
     public DrinkAdapter(Context context, int resource, ArrayList<Drink> drinks) {
         super(context, resource, drinks);
         this.context = context;
+
+        // Connect to database
+        firebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        Drink drink = getItem(position);
+        final Drink drink = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.result_listview, parent, false);
         }
@@ -69,6 +79,15 @@ public class DrinkAdapter extends ArrayAdapter<Drink> {
         TextView measuresTV = (TextView) convertView.findViewById(R.id.measuresTextView);
         ingredientsTV.setText(ingredients);
         measuresTV.setText(measures);
+
+        // Add favourite to database
+        ImageButton favButton = (ImageButton) convertView.findViewById(R.id.favouriteButton);
+        favButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                firebaseDatabaseReference.child("drinks").push().setValue(drink);
+            }
+        });
 
         return convertView;
     }

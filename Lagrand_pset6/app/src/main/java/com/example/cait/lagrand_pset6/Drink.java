@@ -1,6 +1,7 @@
 package com.example.cait.lagrand_pset6;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -17,6 +18,9 @@ public class Drink {
     private ArrayList<String> measures;
     private String dateModified;
     private Bitmap bitImg;
+
+    // Needed for firebase
+    public Drink() { }
 
     public Drink(int id, String name, String category, String alcoholic, String glass, String instructions,
                  String img, ArrayList<String> ingredients, ArrayList<String> measures,
