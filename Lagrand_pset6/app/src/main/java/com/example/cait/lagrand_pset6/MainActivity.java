@@ -29,7 +29,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity
-        implements GoogleApiClient.OnConnectionFailedListener{
+        implements GoogleApiClient.OnConnectionFailedListener {
 
     public static class DrinkViewHolder extends RecyclerView.ViewHolder {
         public TextView nameTV;

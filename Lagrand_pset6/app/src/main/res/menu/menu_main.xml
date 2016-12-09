@@ -4,27 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
     <item
+        android:id="@+id/home"
+        android:orderInCategory="1"
+        android:title="Home"
+        android:icon="@drawable/home"
+        app:showAsAction="always"/>
+    <item
         android:id="@+id/search"
-        android:orderInCategory="200"
+        android:orderInCategory="2"
         android:title="Search"
         android:icon="@drawable/search"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         app:actionViewClass="android.support.v7.widget.SearchView"/>
     <item
         android:id="@+id/user"
-        android:orderInCategory="300"
+        android:orderInCategory="3"
         android:title="User"
         android:icon="@drawable/user"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/settings"
-        android:orderInCategory="100"
+        android:orderInCategory="4"
         android:title="Settings"
         app:showAsAction="never"
         android:icon="@drawable/settings" />
     <item
         android:id="@+id/signout"
-        android:orderInCategory="100"
+        android:orderInCategory="5"
         android:title="Sign Out"
         app:showAsAction="never"
         android:icon="@drawable/settings" />
