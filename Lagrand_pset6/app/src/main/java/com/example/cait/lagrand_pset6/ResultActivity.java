@@ -52,7 +52,10 @@ public class ResultActivity extends AppCompatActivity
         // Insert toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setTitle(null);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
 
         // Get query
         getQuery(getIntent());
@@ -144,6 +147,11 @@ public class ResultActivity extends AppCompatActivity
                 userName = "ANONYMOUS";
                 imgUrl = null;
                 startActivity(new Intent(this, SignInActivity.class));
+                return true;
+            case android.R.id.home:
+
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

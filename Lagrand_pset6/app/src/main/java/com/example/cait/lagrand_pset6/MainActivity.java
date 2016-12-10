@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity
     private GoogleApiClient googleApiClient;
 
     private String userName;
-    private String imgUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +70,9 @@ public class MainActivity extends AppCompatActivity
         // Insert toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setTitle(null);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         // Get user
         userName = "ANONYMOUS";
@@ -85,9 +86,8 @@ public class MainActivity extends AppCompatActivity
             return;
         } else {
             userName = firebaseUser.getDisplayName();
-            if (firebaseUser.getPhotoUrl() != null) {
-                imgUrl = firebaseUser.getPhotoUrl().toString();
-            }
+            TextView welcome = (TextView) findViewById(R.id.welcomeText);
+            welcome.setText(userName + "! \n What are we gonna drink today?");
         }
 
         googleApiClient = new GoogleApiClient.Builder(this)
@@ -152,7 +152,6 @@ public class MainActivity extends AppCompatActivity
                 firebaseAuth.signOut();
                 Auth.GoogleSignInApi.signOut(googleApiClient);
                 userName = "ANONYMOUS";
-                imgUrl = null;
                 startActivity(new Intent(this, SignInActivity.class));
                 return true;
             default:
