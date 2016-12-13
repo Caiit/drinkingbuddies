@@ -11,22 +11,10 @@
         app:showAsAction="always"
         app:actionViewClass="android.support.v7.widget.SearchView"/>
     <item
-        android:id="@+id/user"
-        android:orderInCategory="3"
-        android:title="User"
-        android:icon="@drawable/user"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/settings"
-        android:orderInCategory="4"
-        android:title="Settings"
-        app:showAsAction="never"
-        android:icon="@drawable/settings" />
-    <item
         android:id="@+id/signout"
         android:orderInCategory="5"
         android:title="Sign Out"
-        app:showAsAction="never"
-        android:icon="@drawable/settings" />
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/logout" />
 
 </menu>

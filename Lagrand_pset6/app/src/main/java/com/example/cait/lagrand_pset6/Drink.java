@@ -17,14 +17,15 @@ public class Drink {
     private ArrayList<String> ingredients;
     private ArrayList<String> measures;
     private String dateModified;
-    private Bitmap bitImg;
+    private String bitImg;
+    private boolean fav;
 
     // Needed for firebase
     public Drink() { }
 
     public Drink(int id, String name, String category, String alcoholic, String glass, String instructions,
                  String img, ArrayList<String> ingredients, ArrayList<String> measures,
-                 String dateModified) {
+                 String dateModified, boolean fav) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -35,6 +36,7 @@ public class Drink {
         this.ingredients = ingredients;
         this.measures = measures;
         this.dateModified = dateModified;
+        this.fav = fav;
     }
 
     /********************
@@ -81,15 +83,23 @@ public class Drink {
         return dateModified;
     }
 
-    public Bitmap getBitImg() {
+    public String getBitImg() {
         return bitImg;
+    }
+
+    public boolean getFav() {
+        return fav;
     }
 
     /********************
      * The set methods. *
      ********************/
 
-    public void setBitImg(Bitmap bitImg) {
+    public void setBitImg(String bitImg) {
         this.bitImg = bitImg;
+    }
+
+    public void setFav(boolean fav) {
+        this.fav = fav;
     }
 }

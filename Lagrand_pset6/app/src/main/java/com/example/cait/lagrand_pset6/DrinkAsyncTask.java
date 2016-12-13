@@ -75,7 +75,7 @@ class DrinkAsyncTask extends AsyncTask<String, Integer, String> {
                     }
 
                     drinks.add(new Drink(id, name, category, alcoholic, glass, instructions, img,
-                                         ingredients, measures, dateModified));
+                                         ingredients, measures, dateModified, false));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

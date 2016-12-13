@@ -107,9 +107,9 @@ public class ResultActivity extends AppCompatActivity
         }
     }
 
-    public void setImage(int pos, Bitmap img) {
-        if (img != null) {
-            drinks.get(pos).setBitImg(img);
+    public void setImage(int pos, String imgString) {
+        if (imgString != null) {
+            drinks.get(pos).setBitImg(imgString);
         }
         adapter.notifyDataSetChanged();
     }

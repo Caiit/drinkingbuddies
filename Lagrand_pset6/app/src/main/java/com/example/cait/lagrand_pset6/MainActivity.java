@@ -3,6 +3,7 @@ package com.example.cait.lagrand_pset6;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -10,12 +11,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 public class MainActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener {
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity
         public TextView glassTV;
         public TextView instructionsTV;
         public ImageButton favButton;
+        public ImageView imgView;
 
         public DrinkViewHolder(View v) {
             super(v);
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity
             glassTV = (TextView) itemView.findViewById(R.id.glassText);
             instructionsTV = (TextView) itemView.findViewById(R.id.instructionsText);
             favButton = (ImageButton) itemView.findViewById(R.id.favouriteButton);
+            imgView = (ImageView) itemView.findViewById(R.id.resultImg);
         }
     }
 
@@ -91,7 +96,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
                 .build();
 
@@ -104,16 +109,22 @@ public class MainActivity extends AppCompatActivity
     private void showSavedDrinks() {
         RecyclerView drinksView = (RecyclerView) findViewById(R.id.drinksRecyclerView);
         firebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        Query query = firebaseDatabaseReference.child(firebaseUser.getUid()).child("drinks");
         firebaseAdapter = new FirebaseRecyclerAdapter<Drink, DrinkViewHolder>(Drink.class,
-                                R.layout.result_listview, DrinkViewHolder.class, firebaseDatabaseReference.child("drinks")) {
+                                R.layout.result_listview, DrinkViewHolder.class, query) {
             @Override
-            protected void populateViewHolder(DrinkViewHolder viewHolder, Drink drink, int position) {
+            protected void populateViewHolder(final DrinkViewHolder viewHolder, Drink drink, int position) {
                 viewHolder.nameTV.setText(drink.getName());
                 viewHolder.categoryTV.setText(drink.getCategory());
                 viewHolder.alcoholicTV.setText(drink.getAlcoholic());
                 viewHolder.glassTV.setText(drink.getGlass());
                 viewHolder.instructionsTV.setText(drink.getInstructions());
                 viewHolder.favButton.setVisibility(View.GONE);
+
+                if (drink.getBitImg() != null) {
+                    byte[] imageAsBytes = Base64.decode(drink.getBitImg().getBytes(), Base64.DEFAULT);
+                    viewHolder.imgView.setImageBitmap(BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length));
+                }
             }
         };
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
