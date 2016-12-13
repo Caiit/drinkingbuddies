@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -41,9 +43,6 @@ public class ResultActivity extends AppCompatActivity
 
     private GoogleApiClient googleApiClient;
 
-    private String userName;
-    private String imgUrl;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +55,6 @@ public class ResultActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-
         // Get query
         getQuery(getIntent());
 
@@ -64,8 +62,6 @@ public class ResultActivity extends AppCompatActivity
         DrinkAsyncTask task = new DrinkAsyncTask(this);
         task.execute(query);
 
-        // Get user
-        userName = "ANONYMOUS";
         // Initialize Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
@@ -74,15 +70,10 @@ public class ResultActivity extends AppCompatActivity
             startActivity(new Intent(this, SignInActivity.class));
             finish();
             return;
-        } else {
-            userName = firebaseUser.getDisplayName();
-            if (firebaseUser.getPhotoUrl() != null) {
-                imgUrl = firebaseUser.getPhotoUrl().toString();
-            }
         }
 
         googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
                 .build();
     }
@@ -144,13 +135,14 @@ public class ResultActivity extends AppCompatActivity
             case R.id.signout:
                 firebaseAuth.signOut();
                 Auth.GoogleSignInApi.signOut(googleApiClient);
-                userName = "ANONYMOUS";
-                imgUrl = null;
                 startActivity(new Intent(this, SignInActivity.class));
                 return true;
             case android.R.id.home:
-
                 startActivity(new Intent(this, MainActivity.class));
+                finish();
+                return true;
+            case R.id.advancedSearch:
+                startActivity(new Intent(this, ResultActivity.class));
                 finish();
                 return true;
             default:
@@ -169,8 +161,38 @@ public class ResultActivity extends AppCompatActivity
 
     private void getQuery(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            query = intent.getStringExtra(SearchManager.QUERY);
+
+            RadioGroup searchGroup = (RadioGroup) findViewById(R.id.searchRadioGroup);
+            searchGroup.setVisibility(View.GONE);
+            query = "search.php?s=" + intent.getStringExtra(SearchManager.QUERY);
         }
+        else {
+            query = "random.php";
+        }
+    }
+
+    public void handleSearch(View view) {
+        // Get type of search from radio buttons
+        RadioButton button = (RadioButton) view;
+        RadioGroup categoryGroup = (RadioGroup) findViewById(R.id.categoryGroupButton);
+        String query = (String) button.getTag();
+
+        if (((RadioButton)findViewById(R.id.categoryButton)).isChecked()) {
+            categoryGroup.setVisibility(View.VISIBLE);
+        }
+        else {
+            categoryGroup.setVisibility(View.GONE);
+        }
+
+        if (query.equals("category")) {
+            return;
+        }
+
+        Toast.makeText(this, query, Toast.LENGTH_SHORT).show();
+
+        // Get data from api
+        DrinkAsyncTask task = new DrinkAsyncTask(this);
+        task.execute(query);
     }
 
     @Override

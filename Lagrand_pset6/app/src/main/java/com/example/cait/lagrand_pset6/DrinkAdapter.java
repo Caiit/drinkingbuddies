@@ -1,7 +1,6 @@
 package com.example.cait.lagrand_pset6;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;

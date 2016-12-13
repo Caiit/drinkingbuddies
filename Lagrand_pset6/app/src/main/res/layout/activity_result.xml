@@ -13,6 +13,152 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar"/>
 
+
+    <RadioGroup
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checkedButton="@+id/randomButton"
+        android:id="@+id/searchRadioGroup">
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Random"
+            android:id="@+id/randomButton"
+            android:tag="random.php"
+            android:checked="false"
+            android:onClick="handleSearch"/>
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Alcoholic"
+            android:tag="filter.php?a=Alcoholic"
+            android:checked="false"
+            android:onClick="handleSearch"/>
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Non Alcoholic"
+            android:tag="filter.php?a=Non Alcoholic"
+            android:checked="false"
+            android:onClick="handleSearch"/>
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Category"
+            android:id="@+id/categoryButton"
+            android:tag="category"
+            android:checked="false"
+            android:onClick="handleSearch"/>
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:visibility="gone"
+            android:checkedButton="@+id/ordinaryButton"
+            android:id="@+id/categoryGroupButton">
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ordinary Drink"
+                android:id="@+id/ordinaryButton"
+                android:tag="filter.php?c=Ordinary Drink"
+                android:textSize="12dp"
+                android:checked="false"
+                android:onClick="handleSearch"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cocktail"
+                android:tag="filter.php?c=Cocktail"
+                android:textSize="12dp"
+                android:checked="false"
+                android:onClick="handleSearch"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Soft drink / Soda"
+                android:id="@+id/sodaButton"
+                android:textSize="12dp"
+                android:checked="false"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Milk / Float / Shake"
+                android:id="@+id/milkButton"
+                android:textSize="12dp"
+                android:checked="false"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cocoa"
+                android:id="@+id/cocoaButton"
+                android:textSize="12dp"
+                android:checked="false"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Shot"
+                android:id="@+id/shotButton"
+                android:textSize="12dp"
+                android:checked="false"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Coffee / Tea"
+                android:id="@+id/coffeeButton"
+                android:textSize="12dp"
+                android:checked="false"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Homemade liqueur"
+                android:id="@+id/liqueurButton"
+                android:textSize="12dp"
+                android:checked="false"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Punch / Party Drink"
+                android:id="@+id/punchButton"
+                android:textSize="12dp"
+                android:checked="false"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Beer"
+                android:id="@+id/beerButton"
+                android:textSize="12dp"
+                android:checked="false"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Other"
+                android:id="@+id/otherDrinkButton"
+                android:textSize="12dp"
+                android:checked="false"/>
+
+        </RadioGroup>
+
+    </RadioGroup>
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

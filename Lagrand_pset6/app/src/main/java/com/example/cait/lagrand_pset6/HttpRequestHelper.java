@@ -1,5 +1,7 @@
 package com.example.cait.lagrand_pset6;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -35,13 +37,10 @@ public class HttpRequestHelper {
         // Get query from argument
         String query = params[0];
 
-        // TODO: from app
-        String type = SEARCH;
-
         // Turn string into url
         URL url;
         try {
-            url = new URL(URLSTRING + type + query);
+            url = new URL(URLSTRING + query);
         }
         catch (MalformedURLException e) {
             e.printStackTrace();

@@ -165,6 +165,9 @@ public class MainActivity extends AppCompatActivity
                 userName = "ANONYMOUS";
                 startActivity(new Intent(this, SignInActivity.class));
                 return true;
+            case R.id.advancedSearch:
+                startActivity(new Intent(this, ResultActivity.class));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
