@@ -20,10 +20,10 @@ import static android.R.attr.logo;
 class DrinkAsyncTask extends AsyncTask<String, Integer, String> {
 
     private Context context;
-    private ResultActivity activity;
+    private DrinkActivity activity;
 
     // Constructor
-    DrinkAsyncTask(ResultActivity activity) {
+    DrinkAsyncTask(DrinkActivity activity) {
         this.activity = activity;
         this.context = this.activity.getApplicationContext();
     }
@@ -49,39 +49,39 @@ class DrinkAsyncTask extends AsyncTask<String, Integer, String> {
             Toast.makeText(context, "No data was found", Toast.LENGTH_SHORT).show();
         }
         else {
-            ArrayList<Drink> drinks = new ArrayList<>();
+            Drink drink = new Drink();
             try {
                 JSONObject respObj = new JSONObject(result);
                 JSONArray drinksObj = respObj.getJSONArray("drinks");
                 for (int i = 0; i < drinksObj.length(); i++) {
-                    JSONObject drink = drinksObj.getJSONObject(i);
-                    int id = Integer.parseInt(drink.getString("idDrink"));
-                    String name = drink.getString("strDrink");
-                    String category = drink.getString("strCategory");
-                    String alcoholic = drink.getString("strAlcoholic");
-                    String glass = drink.getString("strGlass");
-                    String instructions = drink.getString("strInstructions");
-                    String img = drink.getString("strDrinkThumb");
-                    String dateModified = drink.getString("dateModified");
+                    JSONObject drinkObj = drinksObj.getJSONObject(i);
+                    int id = Integer.parseInt(drinkObj.getString("idDrink"));
+                    String name = drinkObj.getString("strDrink");
+                    String category = drinkObj.getString("strCategory");
+                    String alcoholic = drinkObj.getString("strAlcoholic");
+                    String glass = drinkObj.getString("strGlass");
+                    String instructions = drinkObj.getString("strInstructions");
+                    String img = drinkObj.getString("strDrinkThumb");
+                    String dateModified = drinkObj.getString("dateModified");
                     ArrayList<String> ingredients = new ArrayList<>();
                     ArrayList<String> measures = new ArrayList<>();
                     // API always returns 15 ingredients and measures
                     for (int j = 1; j < 16; j++) {
-                        String ingredient = drink.getString("strIngredient" + j);
+                        String ingredient = drinkObj.getString("strIngredient" + j);
                         if (!ingredient.equals("")) {
                             ingredients.add(ingredient);
-                            measures.add(drink.getString("strMeasure" + j));
+                            measures.add(drinkObj.getString("strMeasure" + j));
                         }
                     }
 
-                    drinks.add(new Drink(id, name, category, alcoholic, glass, instructions, img,
-                                         ingredients, measures, dateModified, false));
+                    drink = new Drink(id, name, category, alcoholic, glass, instructions, img,
+                                         ingredients, measures, dateModified, false);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            this.activity.showData(drinks);
+            this.activity.showData(drink);
         }
     }
 }

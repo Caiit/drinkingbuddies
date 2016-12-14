@@ -1,6 +1,8 @@
 package com.example.cait.lagrand_pset6;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,6 +31,7 @@ import java.util.ArrayList;
 public class DrinkAdapter extends ArrayAdapter<Drink> {
 
     Context context;
+    Activity activity;
 
     // Firebase instance variables
     private FirebaseAuth firebaseAuth;
@@ -36,9 +40,10 @@ public class DrinkAdapter extends ArrayAdapter<Drink> {
 
     private DatabaseReference firebaseDatabaseReference;
 
-    public DrinkAdapter(Context context, int resource, ArrayList<Drink> drinks) {
-        super(context, resource, drinks);
-        this.context = context;
+    public DrinkAdapter(Activity activity, int resource, ArrayList<Drink> drinks) {
+        super(activity.getApplicationContext(), resource, drinks);
+        this.activity = activity;
+        this.context = activity.getApplicationContext();
 
         // Connect to database
         firebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
@@ -58,16 +63,15 @@ public class DrinkAdapter extends ArrayAdapter<Drink> {
         }
 
         // Set onclick listener to show details of an item when clicked
+        final View finalConvertView = convertView;
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LinearLayout details = (LinearLayout) view.findViewById(R.id.detailsLayout);
-                if (details.getVisibility() == View.GONE) {
-                    details.setVisibility(View.VISIBLE);
-                }
-                else {
-                    details.setVisibility(View.GONE);
-                }
+                // Go to drink activity
+                Intent goToDrink = new Intent(context, DrinkActivity.class);
+                goToDrink.putExtra("Id", drink.getId());
+                context.startActivity(goToDrink);
+                activity.finish();
             }
         });
 
@@ -75,30 +79,9 @@ public class DrinkAdapter extends ArrayAdapter<Drink> {
         showImage(convertView, drink.getBitImg());
 
         TextView nameTV = (TextView) convertView.findViewById(R.id.resultText);
-        TextView categoryTV = (TextView) convertView.findViewById(R.id.categoryText);
-        TextView alcoholicTV = (TextView) convertView.findViewById(R.id.alcoholicText);
-        TextView glassTV = (TextView) convertView.findViewById(R.id.glassText);
-        TextView instructionsTV = (TextView) convertView.findViewById(R.id.instructionsText);
         nameTV.setText(drink.getName());
-        categoryTV.setText(drink.getCategory());
-        alcoholicTV.setText(drink.getAlcoholic());
-        glassTV.setText(drink.getGlass());
-        instructionsTV.setText(drink.getInstructions());
-
-        String ingredients = "";
-        String measures = "";
-        for (int i = 0; i < drink.getIngredients().size(); i++) {
-            ingredients += drink.getIngredients().get(i) + "\n";
-            measures += drink.getMeasures().get(i) + "\n";
-        }
-
-        TextView ingredientsTV = (TextView) convertView.findViewById(R.id.ingredientsTextView);
-        TextView measuresTV = (TextView) convertView.findViewById(R.id.measuresTextView);
-        ingredientsTV.setText(ingredients);
-        measuresTV.setText(measures);
 
         // Handle favourite button
-
         final ImageButton favButton = (ImageButton) convertView.findViewById(R.id.favouriteButton);
         Query query = firebaseDatabaseReference.child(userId).child("drinks").orderByChild("id").equalTo(drink.getId());
 

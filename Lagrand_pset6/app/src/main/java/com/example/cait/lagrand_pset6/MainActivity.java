@@ -115,10 +115,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             protected void populateViewHolder(final DrinkViewHolder viewHolder, Drink drink, int position) {
                 viewHolder.nameTV.setText(drink.getName());
-                viewHolder.categoryTV.setText(drink.getCategory());
-                viewHolder.alcoholicTV.setText(drink.getAlcoholic());
-                viewHolder.glassTV.setText(drink.getGlass());
-                viewHolder.instructionsTV.setText(drink.getInstructions());
                 viewHolder.favButton.setVisibility(View.GONE);
 
                 if (drink.getBitImg() != null) {

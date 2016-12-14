@@ -3,50 +3,53 @@ package com.example.cait.lagrand_pset6;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class ResultActivity extends AppCompatActivity
+public class DrinkActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener {
 
-    private DrinkAdapter adapter;
     private String query;
-    private ArrayList<Drink> drinks;
+    private Drink drink;
 
     // Firebase instance variables
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+    private DatabaseReference firebaseDatabaseReference;
 
     private GoogleApiClient googleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_result);
+        setContentView(R.layout.activity_drink);
 
         // Insert toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -59,7 +62,7 @@ public class ResultActivity extends AppCompatActivity
         getQuery(getIntent());
 
         // Get data from api
-        DrinkIdAsyncTask task = new DrinkIdAsyncTask(this);
+        DrinkAsyncTask task = new DrinkAsyncTask(this);
         task.execute(query);
 
         // Initialize Firebase Auth
@@ -72,6 +75,10 @@ public class ResultActivity extends AppCompatActivity
             return;
         }
 
+        // Set firebase database reference
+
+        firebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
         googleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
@@ -81,28 +88,84 @@ public class ResultActivity extends AppCompatActivity
     /*****************
      * Show results. *
      ****************/
-    public void showData(ArrayList<Drink> drinks) {
-        this.drinks = drinks;
+    public void showData(Drink drink) {
+        this.drink = drink;
+        // Set the data
+        ImageAsyncTask task = new ImageAsyncTask(null, this);
+        task.execute(new ImageTaskParams(0, drink.getImg()));
 
-        // Get the list view and fill it with the drinks
-        ListView drinksListView = (ListView) findViewById(R.id.resultListView);
-        adapter = new DrinkAdapter(this, R.layout.result_listview, drinks);
-        drinksListView.setAdapter(adapter);
+        TextView nameTV = (TextView) findViewById(R.id.drinkText);
+        TextView categoryTV = (TextView) findViewById(R.id.categoryText);
+        TextView alcoholicTV = (TextView) findViewById(R.id.alcoholicText);
+        TextView glassTV = (TextView) findViewById(R.id.glassText);
+        TextView instructionsTV = (TextView) findViewById(R.id.instructionsText);
 
-        // Set image
-        for (int i = 0; i < drinks.size(); i++) {
-            // Get drink
-            Drink drink = drinks.get(i);
-            ImageAsyncTask task = new ImageAsyncTask(this, null);
-            task.execute(new ImageTaskParams(i, drink.getImg()));
+        Log.d(String.valueOf(drink.getName()), "showData: drink");
+        Log.d(String.valueOf(nameTV), "showData: name");
+        nameTV.setText(drink.getName());
+        categoryTV.setText(drink.getCategory());
+        alcoholicTV.setText(drink.getAlcoholic());
+        glassTV.setText(drink.getGlass());
+        instructionsTV.setText(drink.getInstructions());
+
+        if (drink.getIngredients() != null) {
+            String ingredients = "";
+            String measures = "";
+            for (int i = 0; i < drink.getIngredients().size(); i++) {
+                ingredients += drink.getIngredients().get(i) + "\n";
+                measures += drink.getMeasures().get(i) + "\n";
+            }
+
+            TextView ingredientsTV = (TextView) findViewById(R.id.ingredientsTextView);
+            TextView measuresTV = (TextView) findViewById(R.id.measuresTextView);
+            ingredientsTV.setText(ingredients);
+            measuresTV.setText(measures);
+        }
+
+        final ImageButton favButton = (ImageButton) findViewById(R.id.favButton);
+        Query query = firebaseDatabaseReference.child(firebaseUser.getUid()).child("drinks").orderByChild("id").equalTo(drink.getId());
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    Drink dbDrink = snap.getValue(Drink.class);
+                    if (dbDrink.getFav()) {
+                        favButton.setImageDrawable(getResources().getDrawable(android.R.drawable.btn_star_big_on));
+                    }
+                    else {
+                        favButton.setImageDrawable(getResources().getDrawable(android.R.drawable.btn_star_big_off));
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Don't do anything
+            }
+        });
+    }
+
+    public void showImage(String imgString) {
+        if (imgString != null) {
+            ImageView image = (ImageView) findViewById(R.id.drinkImg);
+            byte[] imageAsBytes = Base64.decode(imgString.getBytes(), Base64.DEFAULT);
+            image.setImageBitmap(BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length));
         }
     }
 
-    public void setImage(int pos, String imgString) {
-        if (imgString != null) {
-            drinks.get(pos).setBitImg(imgString);
+    public void addFav(View view) {
+        ImageButton favButton = (ImageButton) view;
+        if (drink.getFav()) {
+            drink.setFav(false);
+            favButton.setImageDrawable(getResources().getDrawable(android.R.drawable.btn_star_big_off));
         }
-        adapter.notifyDataSetChanged();
+        else {
+            drink.setFav(true);
+            favButton.setImageDrawable(getResources().getDrawable(android.R.drawable.btn_star_big_on));
+        }
+        firebaseDatabaseReference.child(firebaseUser.getUid()).child("drinks").push().setValue(drink);
     }
 
 
@@ -154,45 +217,8 @@ public class ResultActivity extends AppCompatActivity
     /**************************
      * Get query from search. *
      **************************/
-    @Override
-    protected void onNewIntent(Intent intent) {
-        getQuery(intent);
-    }
-
     private void getQuery(Intent intent) {
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-
-            RadioGroup searchGroup = (RadioGroup) findViewById(R.id.searchRadioGroup);
-            searchGroup.setVisibility(View.GONE);
-            query = "search.php?s=" + intent.getStringExtra(SearchManager.QUERY);
-        }
-        else {
-            query = "random.php";
-        }
-    }
-
-    public void handleSearch(View view) {
-        // Get type of search from radio buttons
-        RadioButton button = (RadioButton) view;
-        RadioGroup categoryGroup = (RadioGroup) findViewById(R.id.categoryGroupButton);
-        String query = (String) button.getTag();
-
-        if (((RadioButton)findViewById(R.id.categoryButton)).isChecked()) {
-            categoryGroup.setVisibility(View.VISIBLE);
-        }
-        else {
-            categoryGroup.setVisibility(View.GONE);
-        }
-
-        if (query.equals("category")) {
-            return;
-        }
-
-        Toast.makeText(this, query, Toast.LENGTH_SHORT).show();
-
-        // Get data from api
-        DrinkIdAsyncTask task = new DrinkIdAsyncTask(this);
-        task.execute(query);
+        query = "lookup.php?i=" + intent.getExtras().get("Id");
     }
 
     @Override

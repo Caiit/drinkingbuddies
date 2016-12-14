@@ -15,13 +15,20 @@ import java.net.URL;
 
 class ImageAsyncTask extends AsyncTask<ImageTaskParams, Integer, String> {
     private Context context;
-    private ResultActivity activity;
+    private ResultActivity resultActivity;
+    private DrinkActivity drinkActivity;
     private int pos;
 
     // Constructor
-    ImageAsyncTask(ResultActivity activity) {
-        this.activity = activity;
-        this.context = this.activity.getApplicationContext();
+    ImageAsyncTask(ResultActivity resultActivity, DrinkActivity drinkActivity) {
+        this.resultActivity = resultActivity;
+        this.drinkActivity = drinkActivity;
+        if (resultActivity != null) {
+            this.context = this.resultActivity.getApplicationContext();
+        }
+        else {
+            this.context = this.drinkActivity.getApplicationContext();
+        }
     }
 
     protected void onPreExecute() {
@@ -63,6 +70,11 @@ class ImageAsyncTask extends AsyncTask<ImageTaskParams, Integer, String> {
 
     protected void onPostExecute(String imgString) {
         super.onPostExecute(imgString);
-        this.activity.setImage(pos, imgString);
+        if (resultActivity != null) {
+            this.resultActivity.setImage(pos, imgString);
+        }
+        else {
+            this.drinkActivity.showImage(imgString);
+        }
     }
 }
