@@ -68,24 +68,27 @@
 
             <TextView
                 android:text="Alcoholic"
+                android:textStyle="bold"
                 android:id="@+id/alcoholicText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:text="Category"
+                android:textStyle="bold"
                 android:id="@+id/categoryText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:text="Glass"
+                android:textStyle="bold"
                 android:id="@+id/glassText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:padding="10dp"
+                android:layout_marginTop="10dp"
                 android:text="Instructions"
                 android:id="@+id/instructionsText"
                 android:layout_width="match_parent"
