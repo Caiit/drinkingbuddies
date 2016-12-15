@@ -25,7 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 
-public class DrinkAdapter extends ArrayAdapter<Drink> {
+public class DrinkAdapter extends ArrayAdapter<SmallDrink> {
 
     Context context;
     Activity activity;
@@ -37,7 +37,7 @@ public class DrinkAdapter extends ArrayAdapter<Drink> {
 
     private DatabaseReference firebaseDatabaseReference;
 
-    public DrinkAdapter(Activity activity, int resource, ArrayList<Drink> drinks) {
+    public DrinkAdapter(Activity activity, int resource, ArrayList<SmallDrink> drinks) {
         super(activity.getApplicationContext(), resource, drinks);
         this.activity = activity;
         this.context = activity.getApplicationContext();
@@ -54,7 +54,7 @@ public class DrinkAdapter extends ArrayAdapter<Drink> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        final Drink drink = getItem(position);
+        final SmallDrink drink = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.result_listview, parent, false);
         }

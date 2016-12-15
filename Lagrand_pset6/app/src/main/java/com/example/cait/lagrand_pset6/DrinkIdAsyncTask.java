@@ -49,7 +49,7 @@ class DrinkIdAsyncTask extends AsyncTask<String, Integer, String> {
             Toast.makeText(context, "No data was found", Toast.LENGTH_SHORT).show();
         }
         else {
-            ArrayList<Drink> drinks = new ArrayList<>();
+            ArrayList<SmallDrink> drinks = new ArrayList<>();
             try {
                 JSONObject respObj = new JSONObject(result);
                 JSONArray drinksObj = respObj.getJSONArray("drinks");
@@ -59,8 +59,7 @@ class DrinkIdAsyncTask extends AsyncTask<String, Integer, String> {
                     String name = drink.getString("strDrink");
                     String img = drink.getString("strDrinkThumb");
 
-                    drinks.add(new Drink(id, name, "", "", "", "", img,
-                            null, null, "", false));
+                    drinks.add(new SmallDrink(id, name, img, false));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

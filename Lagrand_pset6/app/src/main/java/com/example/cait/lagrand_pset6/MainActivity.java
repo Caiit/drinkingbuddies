@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity
 
     // Firebase instance variables
     private DatabaseReference firebaseDatabaseReference;
-    private FirebaseRecyclerAdapter<Drink, DrinkViewHolder> firebaseAdapter;
+    private FirebaseRecyclerAdapter<SmallDrink, DrinkViewHolder> firebaseAdapter;
 
     private GoogleApiClient googleApiClient;
 
@@ -110,10 +110,10 @@ public class MainActivity extends AppCompatActivity
         RecyclerView drinksView = (RecyclerView) findViewById(R.id.drinksRecyclerView);
         firebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
         Query query = firebaseDatabaseReference.child(firebaseUser.getUid()).child("drinks");
-        firebaseAdapter = new FirebaseRecyclerAdapter<Drink, DrinkViewHolder>(Drink.class,
+        firebaseAdapter = new FirebaseRecyclerAdapter<SmallDrink, DrinkViewHolder>(SmallDrink.class,
                                 R.layout.result_listview, DrinkViewHolder.class, query) {
             @Override
-            protected void populateViewHolder(final DrinkViewHolder viewHolder, Drink drink, int position) {
+            protected void populateViewHolder(final DrinkViewHolder viewHolder, SmallDrink drink, int position) {
                 viewHolder.nameTV.setText(drink.getName());
                 viewHolder.favButton.setVisibility(View.GONE);
 

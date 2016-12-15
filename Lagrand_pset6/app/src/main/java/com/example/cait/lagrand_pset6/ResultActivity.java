@@ -39,7 +39,7 @@ public class ResultActivity extends AppCompatActivity
 
     private DrinkAdapter adapter;
     private String query;
-    private ArrayList<Drink> drinks;
+    private ArrayList<SmallDrink> drinks;
     private int currentViewId;
 
 
@@ -109,7 +109,7 @@ public class ResultActivity extends AppCompatActivity
     /*****************
      * Show results. *
      ****************/
-    public void showData(ArrayList<Drink> drinks) {
+    public void showData(ArrayList<SmallDrink> drinks) {
         this.drinks = drinks;
 
         // Get the list view and fill it with the drinks
@@ -120,7 +120,7 @@ public class ResultActivity extends AppCompatActivity
         // Set image
         for (int i = 0; i < drinks.size(); i++) {
             // Get drink
-            Drink drink = drinks.get(i);
+            SmallDrink drink = drinks.get(i);
             ImageAsyncTask task = new ImageAsyncTask(this, null);
             task.execute(new ImageTaskParams(i, drink.getImg()));
         }
@@ -269,14 +269,12 @@ public class ResultActivity extends AppCompatActivity
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 
-    // Override save instances to save the story after rotation
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState)
     {
         savedInstanceState.putSerializable("view", currentViewId);
         super.onSaveInstanceState(savedInstanceState);
     }
-
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState)
