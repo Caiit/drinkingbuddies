@@ -26,30 +26,25 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener {
 
     public static class DrinkViewHolder extends RecyclerView.ViewHolder {
         public TextView nameTV;
-        public TextView categoryTV;
-        public TextView alcoholicTV;
-        public TextView glassTV;
-        public TextView instructionsTV;
         public ImageButton favButton;
         public ImageView imgView;
 
         public DrinkViewHolder(View v) {
             super(v);
             nameTV = (TextView) itemView.findViewById(R.id.resultText);
-            categoryTV = (TextView) itemView.findViewById(R.id.categoryText);
-            alcoholicTV = (TextView) itemView.findViewById(R.id.alcoholicText);
-            glassTV = (TextView) itemView.findViewById(R.id.glassText);
-            instructionsTV = (TextView) itemView.findViewById(R.id.instructionsText);
             favButton = (ImageButton) itemView.findViewById(R.id.favouriteButton);
             imgView = (ImageView) itemView.findViewById(R.id.resultImg);
         }
@@ -113,14 +108,39 @@ public class MainActivity extends AppCompatActivity
         firebaseAdapter = new FirebaseRecyclerAdapter<SmallDrink, DrinkViewHolder>(SmallDrink.class,
                                 R.layout.result_listview, DrinkViewHolder.class, query) {
             @Override
-            protected void populateViewHolder(final DrinkViewHolder viewHolder, SmallDrink drink, int position) {
+            protected void populateViewHolder(final DrinkViewHolder viewHolder, final SmallDrink drink, int position) {
                 viewHolder.nameTV.setText(drink.getName());
-                viewHolder.favButton.setVisibility(View.GONE);
 
                 if (drink.getBitImg() != null) {
                     byte[] imageAsBytes = Base64.decode(drink.getBitImg().getBytes(), Base64.DEFAULT);
                     viewHolder.imgView.setImageBitmap(BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length));
                 }
+                if (drink.getFav()) {
+                    viewHolder.favButton.setImageDrawable(getResources().getDrawable(android.R.drawable.btn_star_big_on));
+                }
+
+                // Delete favourite with database
+                viewHolder.favButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Query query = firebaseDatabaseReference.child(firebaseUser.getUid()).child("drinks").orderByChild("id").equalTo(drink.getId());
+
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot snap: dataSnapshot.getChildren()) {
+                                    snap.getRef().removeValue();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                });
+
             }
         };
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);

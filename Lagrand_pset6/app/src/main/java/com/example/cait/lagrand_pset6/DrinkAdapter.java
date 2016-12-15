@@ -104,7 +104,7 @@ public class DrinkAdapter extends ArrayAdapter<SmallDrink> {
         });
 
 
-        // Add favourite to database
+        // Handle favourite with database
         favButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
