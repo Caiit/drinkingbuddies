@@ -3,13 +3,11 @@ package com.example.cait.lagrand_pset6;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,8 +28,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 
 public class DrinkActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener {
@@ -87,11 +85,11 @@ public class DrinkActivity extends AppCompatActivity
     /*****************
      * Show results. *
      ****************/
-    public void showData(Drink drink) {
+    public void showData(final Drink drink) {
         this.drink = drink;
         // Set the data
-//        ImageAsyncTask task = new ImageAsyncTask(null, this);
-//        task.execute(new ImageTaskParams(0, drink.getImg()));
+        ImageView imageView = (ImageView) findViewById(R.id.drinkImg);
+        Picasso.with(this).load(drink.getImg()).into(imageView);
 
         TextView nameTV = (TextView) findViewById(R.id.drinkText);
         TextView categoryTV = (TextView) findViewById(R.id.categoryText);
@@ -99,8 +97,6 @@ public class DrinkActivity extends AppCompatActivity
         TextView glassTV = (TextView) findViewById(R.id.glassText);
         TextView instructionsTV = (TextView) findViewById(R.id.instructionsText);
 
-        Log.d(String.valueOf(drink.getName()), "showData: drink");
-        Log.d(String.valueOf(nameTV), "showData: name");
         nameTV.setText(drink.getName());
         categoryTV.setText(drink.getCategory());
         alcoholicTV.setText(drink.getAlcoholic());
@@ -130,9 +126,11 @@ public class DrinkActivity extends AppCompatActivity
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
                     Drink dbDrink = snap.getValue(Drink.class);
                     if (dbDrink.getFav()) {
+                        drink.setFav(true);
                         favButton.setImageDrawable(getResources().getDrawable(android.R.drawable.btn_star_big_on));
                     }
                     else {
+                        drink.setFav(false);
                         favButton.setImageDrawable(getResources().getDrawable(android.R.drawable.btn_star_big_off));
                     }
 
@@ -144,15 +142,6 @@ public class DrinkActivity extends AppCompatActivity
                 // Don't do anything
             }
         });
-    }
-
-    public void showImage(String imgString) {
-        if (imgString != null) {
-            ImageView image = (ImageView) findViewById(R.id.drinkImg);
-            byte[] imageAsBytes = Base64.decode(imgString.getBytes(), Base64.DEFAULT);
-            image.setImageBitmap(BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length));
-            drink.setBitImg(imgString);
-        }
     }
 
     public void addFav(View view) {
@@ -179,8 +168,9 @@ public class DrinkActivity extends AppCompatActivity
         }
         else {
             drink.setFav(true);
+            SmallDrink smallDrink = new SmallDrink(drink.getId(), drink.getName(), drink.getImg(), drink.getFav());
             favButton.setImageDrawable(getResources().getDrawable(android.R.drawable.btn_star_big_on));
-            firebaseDatabaseReference.child(firebaseUser.getUid()).child("drinks").push().setValue(drink);
+            firebaseDatabaseReference.child(firebaseUser.getUid()).child("drinks").push().setValue(smallDrink);
         }
     }
 

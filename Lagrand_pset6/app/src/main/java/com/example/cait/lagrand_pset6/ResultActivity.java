@@ -3,7 +3,6 @@ package com.example.cait.lagrand_pset6;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,22 +12,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.ScrollView;
 import android.widget.Toast;
-
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -116,21 +109,6 @@ public class ResultActivity extends AppCompatActivity
         ListView drinksListView = (ListView) findViewById(R.id.resultListView);
         adapter = new DrinkAdapter(this, R.layout.result_listview, drinks);
         drinksListView.setAdapter(adapter);
-
-//        // Set image
-//        for (int i = 0; i < drinks.size(); i++) {
-//            // Get drink
-//            SmallDrink drink = drinks.get(i);
-//            ImageAsyncTask task = new ImageAsyncTask(this, null);
-//            task.execute(new ImageTaskParams(i, drink.getImg()));
-//        }
-    }
-
-    public void setImage(int pos, String imgString) {
-        if (imgString != null) {
-            drinks.get(pos).setBitImg(imgString);
-        }
-        adapter.notifyDataSetChanged();
     }
 
 

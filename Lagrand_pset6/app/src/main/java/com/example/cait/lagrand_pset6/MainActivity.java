@@ -3,21 +3,14 @@ package com.example.cait.lagrand_pset6;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +23,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -40,26 +32,12 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener {
 
-    public static class DrinkViewHolder extends RecyclerView.ViewHolder {
-        public TextView nameTV;
-        public ImageButton favButton;
-        public ImageView imgView;
-
-        public DrinkViewHolder(View v) {
-            super(v);
-            nameTV = (TextView) itemView.findViewById(R.id.resultText);
-            favButton = (ImageButton) itemView.findViewById(R.id.favouriteButton);
-            imgView = (ImageView) itemView.findViewById(R.id.resultImg);
-        }
-    }
-
     // Firebase instance variables
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
     // Firebase instance variables
     private DatabaseReference firebaseDatabaseReference;
-    private FirebaseRecyclerAdapter<SmallDrink, DrinkViewHolder> firebaseAdapter;
     private ArrayList<SmallDrink> drinks;
 
     private GoogleApiClient googleApiClient;
@@ -109,17 +87,15 @@ public class MainActivity extends AppCompatActivity
     private void showSavedDrinks() {
         firebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
         Query query = firebaseDatabaseReference.child(firebaseUser.getUid()).child("drinks");
-        Log.d(String.valueOf(query), "showSavedDrinks: query");
         drinks = new ArrayList<>();
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                drinks.clear();
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
                     SmallDrink dbDrink = snap.getValue(SmallDrink.class);
                     drinks.add(dbDrink);
-                    Log.d(String.valueOf(dbDrink.getId()), "onDataChange: dbDrink");
                 }
-                Log.d(String.valueOf(drinks.size()), "showSavedDrinks: drinks");
                 adapter.notifyDataSetChanged();
             }
 

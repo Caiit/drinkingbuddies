@@ -5,7 +5,6 @@ public class SmallDrink {
     private int id;
     private String name;
     private String img;
-    private String bitImg;
     private boolean fav;
 
     // Needed for firebase
@@ -34,10 +33,6 @@ public class SmallDrink {
         return img;
     }
 
-    public String getBitImg() {
-        return bitImg;
-    }
-
     public boolean getFav() {
         return fav;
     }
@@ -46,10 +41,6 @@ public class SmallDrink {
     /********************
      * The set methods. *
      ********************/
-
-    public void setBitImg(String bitImg) {
-        this.bitImg = bitImg;
-    }
 
     public void setFav(boolean fav) {
         this.fav = fav;

@@ -1,23 +1,14 @@
 package com.example.cait.lagrand_pset6;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
-
-import com.example.cait.lagrand_pset6.HttpRequestHelper;
-import com.example.cait.lagrand_pset6.ResultActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-
-import static android.R.attr.id;
-import static android.R.attr.logo;
 
 class DrinkIdAsyncTask extends AsyncTask<String, Integer, String> {
 
@@ -60,17 +51,6 @@ class DrinkIdAsyncTask extends AsyncTask<String, Integer, String> {
                     int id = Integer.parseInt(drink.getString("idDrink"));
                     String name = drink.getString("strDrink");
                     String img = drink.getString("strDrinkThumb");
-                    String bitImg = null;
-                    ImageAsyncTask task = new ImageAsyncTask();
-                    try {
-                        bitImg = task.execute(new ImageTaskParams(0, img)).get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
-                    }
-
-
-
-                    Log.d(name + ": " + bitImg, "onPostExecute: bitimg");
                     drinks.add(new SmallDrink(id, name, img, false));
                 }
             } catch (JSONException e) {

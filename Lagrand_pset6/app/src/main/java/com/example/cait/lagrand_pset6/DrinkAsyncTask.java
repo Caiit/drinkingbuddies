@@ -2,20 +2,12 @@ package com.example.cait.lagrand_pset6;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
-
-import com.example.cait.lagrand_pset6.HttpRequestHelper;
-import com.example.cait.lagrand_pset6.ResultActivity;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import static android.R.attr.id;
-import static android.R.attr.logo;
 
 class DrinkAsyncTask extends AsyncTask<String, Integer, String> {
 
@@ -62,7 +54,6 @@ class DrinkAsyncTask extends AsyncTask<String, Integer, String> {
                     String glass = drinkObj.getString("strGlass");
                     String instructions = drinkObj.getString("strInstructions");
                     String img = drinkObj.getString("strDrinkThumb");
-                    String dateModified = drinkObj.getString("dateModified");
                     ArrayList<String> ingredients = new ArrayList<>();
                     ArrayList<String> measures = new ArrayList<>();
                     // API always returns 15 ingredients and measures
@@ -75,7 +66,7 @@ class DrinkAsyncTask extends AsyncTask<String, Integer, String> {
                     }
 
                     drink = new Drink(id, name, category, alcoholic, glass, instructions, img,
-                                         ingredients, measures, dateModified, false);
+                                         ingredients, measures, false);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

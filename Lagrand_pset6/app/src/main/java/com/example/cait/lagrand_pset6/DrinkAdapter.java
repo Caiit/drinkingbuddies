@@ -3,10 +3,6 @@ package com.example.cait.lagrand_pset6;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +22,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Phaser;
 
 
 public class DrinkAdapter extends ArrayAdapter<SmallDrink> {
@@ -61,66 +55,12 @@ public class DrinkAdapter extends ArrayAdapter<SmallDrink> {
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.result_listview, parent, false);
         }
-        SmallDrink drink = getItem(position);
 
-        ImageView imageView = (ImageView) convertView.findViewById(R.id.resultImg);
+        // Get the data item for this position
+        final SmallDrink drink = getItem(position);
 
-        Picasso.with(activity).load(drink.getImg()).into(imageView);
-
-//        // Get the data item for this position
-//        SmallDrink drink = getItem(position);
-//        Log.d(position + " " + String.valueOf(drink.getId()), "getView: drink");
-//
-//        ImageView image = null;
-//        if (v == null) {
-//            v = LayoutInflater.from(getContext()).inflate(R.layout.result_listview, parent, false);
-//
-//            image = (ImageView) v.findViewById(R.id.resultImg);
-//
-//            v.setTag(R.id.resultImg, image);
-//        } else {
-//            image = (ImageView) v.getTag(R.id.resultImg);
-//            Log.d(String.valueOf(image), "bla bla bla");
-//        }
-//
-//
-//
-        TextView nameTV = (TextView) convertView.findViewById(R.id.resultText);
-        Log.d(String.valueOf(nameTV.getId()), "getView: name");
-        nameTV.setText(drink.getName());
-//
-//        if (images.length > 0)
-//        {
-//            Log.d(drink.getName(), "getView: name");
-//            Log.d(position + " " + images.length, "POS VS IMAGES");
-//            if (drink.getImg() != null && images[position] == null)
-//            {
-//                byte[] imageAsBytes = Base64.decode(drink.getImg().getBytes(), Base64.DEFAULT);
-//                images[position] = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
-//            }
-//
-//            if (images[position] != null)
-//            {
-//
-//                image.setImageBitmap(images[position]);
-//            }
-//        }
-
-
-//        ImageAsyncTask task = new ImageAsyncTask();
-//        try {
-//            Bitmap img = task.execute(new ImageTaskParams(0, drink.getImg())).get();
-//            if (img != null) {
-//                //Log.d(String.valueOf(image.getId()), "getView: img");
-//                image.setImageBitmap(img);
-//            }
-//        } catch (InterruptedException | ExecutionException e) {
-//            e.printStackTrace();
-//        }
-
-        /*
         // Set onclick listener to show details of an item when clicked
-        v.setOnClickListener(new View.OnClickListener() {
+        convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Go to drink activity
@@ -129,19 +69,18 @@ public class DrinkAdapter extends ArrayAdapter<SmallDrink> {
                 context.startActivity(goToDrink);
             }
         });
-        */
 
 
-//        // Set the data
-//        showImage(image, drink.getImg());
+        // Set the data of the drink
+        ImageView imageView = (ImageView) convertView.findViewById(R.id.resultImg);
+        Picasso.with(activity).load(drink.getImg()).into(imageView);
 
-
-
-        /*
+        TextView nameTV = (TextView) convertView.findViewById(R.id.resultText);
+        nameTV.setText(drink.getName());
 
         // Handle favourite button
-        final ImageButton favButton = (ImageButton) v.findViewById(R.id.favouriteButton);
-//        favButton.setImageDrawable(context.getResources().getDrawable(android.R.drawable.btn_star_big_off));
+        final ImageButton favButton = (ImageButton) convertView.findViewById(R.id.favouriteButton);
+        favButton.setImageDrawable(context.getResources().getDrawable(android.R.drawable.btn_star_big_off));
         Query query = firebaseDatabaseReference.child(userId).child("drinks").orderByChild("id").equalTo(drink.getId());
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -197,16 +136,7 @@ public class DrinkAdapter extends ArrayAdapter<SmallDrink> {
                 }
             }
         });
-        */
 
         return convertView;
-    }
-
-    public void showImage(ImageView image, String imgString) {
-        Log.d("test: " + imgString, "showImage: ");
-        if (imgString != null) {
-            byte[] imageAsBytes = Base64.decode(imgString.getBytes(), Base64.DEFAULT);
-            image.setImageBitmap(BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length));
-        }
     }
 }
