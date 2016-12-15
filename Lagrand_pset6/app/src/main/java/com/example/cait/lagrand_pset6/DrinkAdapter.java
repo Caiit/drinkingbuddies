@@ -5,16 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -71,7 +68,6 @@ public class DrinkAdapter extends ArrayAdapter<Drink> {
                 Intent goToDrink = new Intent(context, DrinkActivity.class);
                 goToDrink.putExtra("Id", drink.getId());
                 context.startActivity(goToDrink);
-                activity.finish();
             }
         });
 
@@ -83,6 +79,7 @@ public class DrinkAdapter extends ArrayAdapter<Drink> {
 
         // Handle favourite button
         final ImageButton favButton = (ImageButton) convertView.findViewById(R.id.favouriteButton);
+        favButton.setImageDrawable(context.getResources().getDrawable(android.R.drawable.btn_star_big_off));
         Query query = firebaseDatabaseReference.child(userId).child("drinks").orderByChild("id").equalTo(drink.getId());
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -114,12 +111,28 @@ public class DrinkAdapter extends ArrayAdapter<Drink> {
                 if (drink.getFav()) {
                     drink.setFav(false);
                     favButton.setImageDrawable(context.getResources().getDrawable(android.R.drawable.btn_star_big_off));
+
+                    Query query = firebaseDatabaseReference.child(userId).child("drinks").orderByChild("id").equalTo(drink.getId());
+
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot snap: dataSnapshot.getChildren()) {
+                                snap.getRef().removeValue();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
                 else {
                     drink.setFav(true);
                     favButton.setImageDrawable(context.getResources().getDrawable(android.R.drawable.btn_star_big_on));
+                    firebaseDatabaseReference.child(userId).child("drinks").push().setValue(drink);
                 }
-                firebaseDatabaseReference.child(userId).child("drinks").push().setValue(drink);
             }
         });
 

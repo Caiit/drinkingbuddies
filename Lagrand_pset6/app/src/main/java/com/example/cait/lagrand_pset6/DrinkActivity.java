@@ -76,7 +76,6 @@ public class DrinkActivity extends AppCompatActivity
         }
 
         // Set firebase database reference
-
         firebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
         googleApiClient = new GoogleApiClient.Builder(this)
@@ -152,6 +151,7 @@ public class DrinkActivity extends AppCompatActivity
             ImageView image = (ImageView) findViewById(R.id.drinkImg);
             byte[] imageAsBytes = Base64.decode(imgString.getBytes(), Base64.DEFAULT);
             image.setImageBitmap(BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length));
+            drink.setBitImg(imgString);
         }
     }
 
@@ -160,12 +160,28 @@ public class DrinkActivity extends AppCompatActivity
         if (drink.getFav()) {
             drink.setFav(false);
             favButton.setImageDrawable(getResources().getDrawable(android.R.drawable.btn_star_big_off));
+
+            Query query = firebaseDatabaseReference.child(firebaseUser.getUid()).child("drinks").orderByChild("id").equalTo(drink.getId());
+
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snap: dataSnapshot.getChildren()) {
+                        snap.getRef().removeValue();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
         else {
             drink.setFav(true);
             favButton.setImageDrawable(getResources().getDrawable(android.R.drawable.btn_star_big_on));
+            firebaseDatabaseReference.child(firebaseUser.getUid()).child("drinks").push().setValue(drink);
         }
-        firebaseDatabaseReference.child(firebaseUser.getUid()).child("drinks").push().setValue(drink);
     }
 
 

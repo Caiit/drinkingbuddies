@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -29,13 +30,29 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ResultActivity extends AppCompatActivity
-        implements GoogleApiClient.OnConnectionFailedListener {
+        implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private DrinkAdapter adapter;
     private String query;
     private ArrayList<Drink> drinks;
+    private int currentViewId;
+
+
+
+    private static final List<String> CATEGORIES = Arrays.asList("Ordinary Drink", "Cocktail",
+            "Soft Drink / Soda", "Milk / Float / Shake", "Other/Unknown", "Cocoa", "Shot",
+            "Coffee / Tea", "Homemade Liqueur", "Punch / Party Drink", "Beer");
+    private static final List<String> GLASSES = Arrays.asList("Highball glass", "Cocktail glass",
+            "Old-fashioned glass", "Collins glass", "Pousse cafe glass", "Red wine glass",
+            "Whiskey sour glass", "Champagne flute", "Cordial glass", "Irish coffee cup",
+            "White wine glass", "Brandy snifter", "Parfait glass", "vote",
+            "Margarita/Coupette glass", "Shot glass", "Coffee mug", "Punch bowl",
+            "Hurricane glass", "Pitcher", "Pint glass", "Mason jar", "Beer mug",
+            "Wine Glass", "Beer pilsner", "Sherry glass");
 
     // Firebase instance variables
     private FirebaseAuth firebaseAuth;
@@ -76,6 +93,14 @@ public class ResultActivity extends AppCompatActivity
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
                 .build();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Log.d(String.valueOf(findViewById(currentViewId)), "onResume: currentViewId");
+        handleSearch(findViewById(currentViewId));
     }
 
     /*****************
@@ -161,34 +186,69 @@ public class ResultActivity extends AppCompatActivity
 
     private void getQuery(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-
-            RadioGroup searchGroup = (RadioGroup) findViewById(R.id.searchRadioGroup);
-            searchGroup.setVisibility(View.GONE);
             query = "search.php?s=" + intent.getStringExtra(SearchManager.QUERY);
         }
         else {
             query = "random.php";
+            currentViewId = R.id.randomButton;
         }
     }
 
     public void handleSearch(View view) {
+        // Only set id if not a group item
+        if (view.getId() > 100) {
+            currentViewId = view.getId();
+        }
+        Log.d(String.valueOf(currentViewId), "handleSearch: currentViewId");
         // Get type of search from radio buttons
         RadioButton button = (RadioButton) view;
-        RadioGroup categoryGroup = (RadioGroup) findViewById(R.id.categoryGroupButton);
+        RadioGroup group = (RadioGroup) findViewById(R.id.extraGroupButton);
         String query = (String) button.getTag();
 
-        if (((RadioButton)findViewById(R.id.categoryButton)).isChecked()) {
-            categoryGroup.setVisibility(View.VISIBLE);
+        if ((((RadioButton)findViewById(R.id.categoryButton)).isChecked() ||
+                ((RadioButton)findViewById(R.id.glassButton)).isChecked())) {
+
+            // Only add new buttons if view is currently gone or switches between category
+            // and glass
+            if (group.getVisibility() == View.GONE ||
+                    (query.equals("c") && group.getTag().equals("g")) ||
+                    (query.equals("g") && group.getTag().equals("c"))) {
+                group.setVisibility(View.VISIBLE);
+
+                // Set radio button filters
+                List<String> groupItems;
+                String tag;
+                if (((RadioButton)findViewById(R.id.categoryButton)).isChecked()) {
+                    groupItems = CATEGORIES;
+                    tag = "c";
+                }
+                else {
+                    groupItems = GLASSES;
+                    tag ="g";
+                }
+
+                group.setTag(tag);
+
+                group.removeAllViews();
+
+                for (String item : groupItems) {
+                    RadioButton itemButton = new RadioButton(this);
+                    itemButton.setText(item);
+                    itemButton.setTag("filter.php?" + tag + "=" + item);
+                    itemButton.setTextSize(12);
+                    itemButton.setOnClickListener(this);
+                    group.addView(itemButton);
+                }
+            }
         }
         else {
-            categoryGroup.setVisibility(View.GONE);
+            group.setVisibility(View.GONE);
         }
 
-        if (query.equals("category")) {
+        if (query.equals("c") || query.equals("g")) {
+            // Don't search api
             return;
         }
-
-        Toast.makeText(this, query, Toast.LENGTH_SHORT).show();
 
         // Get data from api
         DrinkIdAsyncTask task = new DrinkIdAsyncTask(this);
@@ -196,8 +256,29 @@ public class ResultActivity extends AppCompatActivity
     }
 
     @Override
+    public void onClick(View view) {
+        handleSearch(view);
+    }
+
+    @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(String.valueOf(connectionResult), "onConnectionFailed:" + connectionResult);
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
+    }
+
+    // Override save instances to save the story after rotation
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState)
+    {
+        savedInstanceState.putSerializable("view", currentViewId);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+        super.onRestoreInstanceState(savedInstanceState);
+        currentViewId = (int) savedInstanceState.getSerializable("view");
     }
 }
