@@ -12,25 +12,11 @@ import java.net.URL;
 
 public class HttpRequestHelper {
 
-    /****************************************
-     * API URL parts for searching the api. *
-     ****************************************/
+    // API URL for searching the api
     private static final String URLSTRING = "http://www.thecocktaildb.com/api/json/v1/1/";
-    private static final String SEARCH = "search.php?s=";
-    private static final String ID = "lookup.php?i=";
-    private static final String RANDOM = "random.php";
-    private static final String INGREDIENT = "filter.php?i=";
-    private static final String ALCOHOLIC = "filter.php?a=";
-    private static final String CATEGORY = "filter.php?c=";
-    private static final String GLASS = "filter.php?g=";
-    private static final String INGREDIENTS_LIST = "list.php?i=list";
-    private static final String ALCOHOLIC_LIST = "list.php?a=list";
-    private static final String CATEGORY_LIST = "list.php?c=list";
-    private static final String GLASS_LIST = "list.php?g=list";
 
 
     protected static synchronized String downloadFromServer(String... params) {
-
         // Declare return string result
         String result = "";
 

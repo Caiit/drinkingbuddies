@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -99,8 +100,10 @@ public class ResultActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        Log.d(String.valueOf(findViewById(currentViewId)), "onResume: currentViewId");
-        handleSearch(findViewById(currentViewId));
+        // Go to handle search if advanced search was currently used
+        if (currentViewId > 100) {
+            handleSearch(findViewById(currentViewId));
+        }
     }
 
     /*****************
@@ -187,6 +190,10 @@ public class ResultActivity extends AppCompatActivity
     private void getQuery(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             query = "search.php?s=" + intent.getStringExtra(SearchManager.QUERY);
+            currentViewId = -1;
+            // Don't show advanced search
+            LinearLayout advanced = (LinearLayout) findViewById(R.id.advancedSearchView);
+            advanced.setVisibility(View.GONE);
         }
         else {
             query = "random.php";
@@ -195,11 +202,7 @@ public class ResultActivity extends AppCompatActivity
     }
 
     public void handleSearch(View view) {
-        // Only set id if not a group item
-        if (view.getId() > 100) {
-            currentViewId = view.getId();
-        }
-        Log.d(String.valueOf(currentViewId), "handleSearch: currentViewId");
+        currentViewId = view.getId();
         // Get type of search from radio buttons
         RadioButton button = (RadioButton) view;
         RadioGroup group = (RadioGroup) findViewById(R.id.extraGroupButton);
