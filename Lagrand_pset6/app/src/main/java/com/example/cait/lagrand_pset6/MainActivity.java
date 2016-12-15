@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +34,8 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener {
@@ -57,10 +60,12 @@ public class MainActivity extends AppCompatActivity
     // Firebase instance variables
     private DatabaseReference firebaseDatabaseReference;
     private FirebaseRecyclerAdapter<SmallDrink, DrinkViewHolder> firebaseAdapter;
+    private ArrayList<SmallDrink> drinks;
 
     private GoogleApiClient googleApiClient;
 
     private String userName;
+    private DrinkAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,51 +107,32 @@ public class MainActivity extends AppCompatActivity
      * Show saved drinks. *
      **********************/
     private void showSavedDrinks() {
-        RecyclerView drinksView = (RecyclerView) findViewById(R.id.drinksRecyclerView);
         firebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
         Query query = firebaseDatabaseReference.child(firebaseUser.getUid()).child("drinks");
-        firebaseAdapter = new FirebaseRecyclerAdapter<SmallDrink, DrinkViewHolder>(SmallDrink.class,
-                                R.layout.result_listview, DrinkViewHolder.class, query) {
+        Log.d(String.valueOf(query), "showSavedDrinks: query");
+        drinks = new ArrayList<>();
+        query.addValueEventListener(new ValueEventListener() {
             @Override
-            protected void populateViewHolder(final DrinkViewHolder viewHolder, final SmallDrink drink, int position) {
-                viewHolder.nameTV.setText(drink.getName());
-
-                if (drink.getBitImg() != null) {
-                    byte[] imageAsBytes = Base64.decode(drink.getBitImg().getBytes(), Base64.DEFAULT);
-                    viewHolder.imgView.setImageBitmap(BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length));
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    SmallDrink dbDrink = snap.getValue(SmallDrink.class);
+                    drinks.add(dbDrink);
+                    Log.d(String.valueOf(dbDrink.getId()), "onDataChange: dbDrink");
                 }
-                if (drink.getFav()) {
-                    viewHolder.favButton.setImageDrawable(getResources().getDrawable(android.R.drawable.btn_star_big_on));
-                }
-
-                // Delete favourite with database
-                viewHolder.favButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Query query = firebaseDatabaseReference.child(firebaseUser.getUid()).child("drinks").orderByChild("id").equalTo(drink.getId());
-
-                        query.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot snap: dataSnapshot.getChildren()) {
-                                    snap.getRef().removeValue();
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-                    }
-                });
-
+                Log.d(String.valueOf(drinks.size()), "showSavedDrinks: drinks");
+                adapter.notifyDataSetChanged();
             }
-        };
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setStackFromEnd(true);
-        drinksView.setLayoutManager(linearLayoutManager);
-        drinksView.setAdapter(firebaseAdapter);
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Don't do anything
+            }
+        });
+
+        // Get the list view and fill it with the drinks
+        ListView drinksListView = (ListView) findViewById(R.id.favListView);
+        adapter = new DrinkAdapter(this, R.layout.result_listview, drinks);
+        drinksListView.setAdapter(adapter);
     }
 
     /********************

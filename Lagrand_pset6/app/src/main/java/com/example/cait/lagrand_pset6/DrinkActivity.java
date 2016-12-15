@@ -90,8 +90,8 @@ public class DrinkActivity extends AppCompatActivity
     public void showData(Drink drink) {
         this.drink = drink;
         // Set the data
-        ImageAsyncTask task = new ImageAsyncTask(null, this);
-        task.execute(new ImageTaskParams(0, drink.getImg()));
+//        ImageAsyncTask task = new ImageAsyncTask(null, this);
+//        task.execute(new ImageTaskParams(0, drink.getImg()));
 
         TextView nameTV = (TextView) findViewById(R.id.drinkText);
         TextView categoryTV = (TextView) findViewById(R.id.categoryText);

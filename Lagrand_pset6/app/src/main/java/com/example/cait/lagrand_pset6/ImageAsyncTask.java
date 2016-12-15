@@ -20,15 +20,15 @@ class ImageAsyncTask extends AsyncTask<ImageTaskParams, Integer, String> {
     private int pos;
 
     // Constructor
-    ImageAsyncTask(ResultActivity resultActivity, DrinkActivity drinkActivity) {
-        this.resultActivity = resultActivity;
-        this.drinkActivity = drinkActivity;
-        if (resultActivity != null) {
-            this.context = this.resultActivity.getApplicationContext();
-        }
-        else {
-            this.context = this.drinkActivity.getApplicationContext();
-        }
+    ImageAsyncTask() {
+//        this.resultActivity = resultActivity;
+//        this.drinkActivity = drinkActivity;
+//        if (resultActivity != null) {
+//            this.context = this.resultActivity.getApplicationContext();
+//        }
+//        else {
+//            this.context = this.drinkActivity.getApplicationContext();
+//        }
     }
 
     protected void onPreExecute() {
@@ -55,7 +55,7 @@ class ImageAsyncTask extends AsyncTask<ImageTaskParams, Integer, String> {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] bytes = baos.toByteArray();
-           imgString = Base64.encodeToString(bytes, Base64.DEFAULT);
+            imgString = Base64.encodeToString(bytes, Base64.DEFAULT);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,11 +70,11 @@ class ImageAsyncTask extends AsyncTask<ImageTaskParams, Integer, String> {
 
     protected void onPostExecute(String imgString) {
         super.onPostExecute(imgString);
-        if (resultActivity != null) {
-            this.resultActivity.setImage(pos, imgString);
-        }
-        else {
-            this.drinkActivity.showImage(imgString);
-        }
+//        if (resultActivity != null) {
+//            this.resultActivity.setImage(pos, imgString);
+//        }
+//        else {
+//            this.drinkActivity.showImage(imgString);
+//        }
     }
 }

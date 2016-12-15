@@ -117,13 +117,13 @@ public class ResultActivity extends AppCompatActivity
         adapter = new DrinkAdapter(this, R.layout.result_listview, drinks);
         drinksListView.setAdapter(adapter);
 
-        // Set image
-        for (int i = 0; i < drinks.size(); i++) {
-            // Get drink
-            SmallDrink drink = drinks.get(i);
-            ImageAsyncTask task = new ImageAsyncTask(this, null);
-            task.execute(new ImageTaskParams(i, drink.getImg()));
-        }
+//        // Set image
+//        for (int i = 0; i < drinks.size(); i++) {
+//            // Get drink
+//            SmallDrink drink = drinks.get(i);
+//            ImageAsyncTask task = new ImageAsyncTask(this, null);
+//            task.execute(new ImageTaskParams(i, drink.getImg()));
+//        }
     }
 
     public void setImage(int pos, String imgString) {

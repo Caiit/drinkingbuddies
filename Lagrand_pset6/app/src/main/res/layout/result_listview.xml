@@ -36,6 +36,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@android:drawable/btn_star_big_off"
+                    android:visibility="visible"
                     android:background="@android:color/transparent"/>
 
 
@@ -50,7 +51,8 @@
             android:id="@+id/resultImg"
             android:layout_gravity="right|center"
             android:padding="10dp"
-            android:contentDescription="imgDrink" />
+            android:contentDescription="imgDrink"
+            app:srcCompat="@android:drawable/ic_delete" />
 
 
     </LinearLayout>
