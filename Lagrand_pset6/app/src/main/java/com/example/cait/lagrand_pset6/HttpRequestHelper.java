@@ -1,7 +1,5 @@
 package com.example.cait.lagrand_pset6;
 
-import android.util.Log;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,14 +7,24 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * Drinking Buddies
+ * Caitlin Lagrand (10759972)
+ * Native App Studio Assignment 6
+ *
+ * The HttpRequestHelper handles the interaction with the API
+ * http://www.thecocktaildb.com/
+ */
 
-public class HttpRequestHelper {
+class HttpRequestHelper {
 
     // API URL for searching the api
     private static final String URLSTRING = "http://www.thecocktaildb.com/api/json/v1/1/";
 
-
-    protected static synchronized String downloadFromServer(String... params) {
+    /**
+     * Get the information from the API.
+     */
+    static synchronized String downloadFromServer(String... params) {
         // Declare return string result
         String result = "";
 
@@ -36,16 +44,17 @@ public class HttpRequestHelper {
         // Make the connection
         HttpURLConnection connection;
         try {
-            // open connection, set request method
+            // Open connection, set request method
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
 
-            // get response code
+            // Get response code
             Integer responseCode = connection.getResponseCode();
 
-            // if 200-300, read inputstream
+            // If 200-300, read inputstream
             if (200 >= responseCode && responseCode <= 299) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                BufferedReader br = new BufferedReader(new InputStreamReader(
+                                                       connection.getInputStream()));
                 String line;
                 while ((line = br.readLine()) != null) {
                     result += line;
@@ -55,6 +64,5 @@ public class HttpRequestHelper {
             e.printStackTrace();
         }
         return result;
-
     }
 }

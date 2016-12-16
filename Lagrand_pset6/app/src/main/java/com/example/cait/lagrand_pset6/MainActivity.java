@@ -29,6 +29,16 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+/**
+ * Drinking Buddies
+ * Caitlin Lagrand (10759972)
+ * Native App Studio Assignment 6
+ *
+ * The MainActivity shows the favourite drinks of the user.
+ * The user can click the favourite button to delete the drink
+ * from its favourite list.
+ */
+
 public class MainActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -36,43 +46,27 @@ public class MainActivity extends AppCompatActivity
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
-    // Firebase instance variables
-    private DatabaseReference firebaseDatabaseReference;
-    private ArrayList<SmallDrink> drinks;
-
+    // Google API client
     private GoogleApiClient googleApiClient;
 
     private String userName;
     private DrinkAdapter adapter;
+    private ArrayList<SmallDrink> drinks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Insert toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(null);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        setToolbar();
 
-        // Get user
-        userName = "ANONYMOUS";
         // Initialize Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
-        if (firebaseUser == null) {
-            // Not signed in, launch the Sign In activity
-            startActivity(new Intent(this, SignInActivity.class));
-            finish();
-            return;
-        } else {
-            userName = firebaseUser.getDisplayName();
-            TextView welcome = (TextView) findViewById(R.id.welcomeText);
-            welcome.setText(userName + "! \n What are we gonna drink today?");
-        }
 
+        checkLoggedIn();
+
+        // Initialize google api client
         googleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
@@ -81,11 +75,11 @@ public class MainActivity extends AppCompatActivity
         showSavedDrinks();
     }
 
-    /**********************
-     * Show saved drinks. *
-     **********************/
+    /**
+     * Show the information of the saved drinks in the database.
+     */
     private void showSavedDrinks() {
-        firebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference firebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
         Query query = firebaseDatabaseReference.child(firebaseUser.getUid()).child("drinks");
         drinks = new ArrayList<>();
         query.addValueEventListener(new ValueEventListener() {
@@ -101,7 +95,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Don't do anything
+                Log.w("Database error", "onCancelled: db error", databaseError.toException());
             }
         });
 
@@ -111,9 +105,35 @@ public class MainActivity extends AppCompatActivity
         drinksListView.setAdapter(adapter);
     }
 
-    /********************
-     * Toolbar methods. *
-     ********************/
+    /**
+     * Check if the user is logged in, if not, go to sign in activity.
+     */
+    private void checkLoggedIn() {
+        if (firebaseUser == null) {
+            // Not signed in, launch the Sign In activity
+            startActivity(new Intent(this, SignInActivity.class));
+            finish();
+        } else {
+            userName = firebaseUser.getDisplayName();
+            TextView welcome = (TextView) findViewById(R.id.welcomeText);
+            welcome.setText(userName + "! \n What are we gonna drink today?");
+        }
+    }
+
+    /**
+     * Toolbar method: set the toolbar.
+     */
+    private void setToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(null);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+    }
+
+    /**
+     * Toolbar method: set the search option in the toolbar.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -129,11 +149,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * Toolbar method: handle toolbar item clicks.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         switch (id) {
@@ -158,6 +178,9 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    /**
+     * If no connection to Google Play, show to the user.
+     */
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(String.valueOf(connectionResult), "onConnectionFailed:" + connectionResult);

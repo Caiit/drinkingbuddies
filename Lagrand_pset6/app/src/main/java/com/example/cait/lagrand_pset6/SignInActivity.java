@@ -22,10 +22,16 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+/**
+ * Drinking Buddies
+ * Caitlin Lagrand (10759972)
+ * Native App Studio Assignment 6
+ *
+ * The SignInActivity let the user sign in using a google account.
+ */
 
 public class SignInActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
-
 
     private GoogleApiClient googleApiClient;
     private FirebaseAuth firebaseAuth;
@@ -34,7 +40,6 @@ public class SignInActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-
 
         // Assign fields
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
@@ -47,7 +52,7 @@ public class SignInActivity extends AppCompatActivity
                 .requestEmail()
                 .build();
         googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
@@ -55,22 +60,16 @@ public class SignInActivity extends AppCompatActivity
         firebaseAuth = FirebaseAuth.getInstance();
     }
 
+    /**
+     * Go to google sign in when the sign in button is clicked.
+     */
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.sign_in_button:
-                signIn();
-                break;
-            default:
-                return;
+        if (v.getId() == R.id.sign_in_button) {
+            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+            startActivityForResult(signInIntent, 9001);
         }
     }
-
-    private void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-        startActivityForResult(signInIntent, 9001);
-    }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -114,6 +113,9 @@ public class SignInActivity extends AppCompatActivity
                 });
     }
 
+    /**
+     * If no connection to Google Play, show to the user.
+     */
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(String.valueOf(connectionResult), "onConnectionFailed:" + connectionResult);

@@ -2,7 +2,16 @@ package com.example.cait.lagrand_pset6;
 
 import java.util.ArrayList;
 
-public class Drink {
+/**
+ * Drinking Buddies
+ * Caitlin Lagrand (10759972)
+ * Native App Studio Assignment 6
+ *
+ * The Drink object contains all the information about a drink, which can be set and obtained
+ * using the get and set methods.
+ */
+
+class Drink {
 
     private int id;
     private String name;
@@ -15,11 +24,16 @@ public class Drink {
     private ArrayList<String> measures;
     private boolean fav;
 
-    // Needed for firebase
-    public Drink() { }
+    /**
+     * Constructor with no arguments needed for firebase.
+     */
+    Drink() { }
 
-    public Drink(int id, String name, String category, String alcoholic, String glass, String instructions,
-                 String img, ArrayList<String> ingredients, ArrayList<String> measures, boolean fav) {
+    /**
+     * Constructs a Drink object by setting the information.
+     */
+    Drink(int id, String name, String category, String alcoholic, String glass, String instructions,
+          String img, ArrayList<String> ingredients, ArrayList<String> measures, boolean fav) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -32,10 +46,9 @@ public class Drink {
         this.fav = fav;
     }
 
-    /********************
-     * The get methods. *
-     ********************/
-
+    /**
+     * The get methods.
+     */
     public int getId() {
         return id;
     }
@@ -44,42 +57,41 @@ public class Drink {
         return name;
     }
 
-    public String getCategory() {
+    String getCategory() {
         return category;
     }
 
-    public String getAlcoholic() {
+    String getAlcoholic() {
         return alcoholic;
     }
 
-    public String getGlass() {
+    String getGlass() {
         return glass;
     }
 
-    public String getInstructions() {
+    String getInstructions() {
         return instructions;
     }
 
-    public String getImg() {
+    String getImg() {
         return img;
     }
 
-    public ArrayList<String> getIngredients() {
+    ArrayList<String> getIngredients() {
         return ingredients;
     }
 
-    public ArrayList<String> getMeasures() {
+    ArrayList<String> getMeasures() {
         return measures;
     }
 
-    public boolean getFav() {
+    boolean getFav() {
         return fav;
     }
 
-    /********************
-     * The set methods. *
-     ********************/
-
+    /**
+     * The set methods.
+     */
     public void setFav(boolean fav) {
         this.fav = fav;
     }

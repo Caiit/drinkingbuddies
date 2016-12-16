@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
@@ -30,67 +31,69 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+/**
+ * Drinking Buddies
+ * Caitlin Lagrand (10759972)
+ * Native App Studio Assignment 6
+ *
+ * The DrinkActivity shows all the information of one drink to the user.
+ * The user can click the favourite button to add or delete the drink
+ * from its favourite list.
+ */
 
 public class DrinkActivity extends AppCompatActivity
         implements GoogleApiClient.OnConnectionFailedListener {
 
-    private String query;
-    private Drink drink;
-
     // Firebase instance variables
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
-    private DatabaseReference firebaseDatabaseReference;
+    private DatabaseReference dbRef;
 
+    // Google API client
     private GoogleApiClient googleApiClient;
+
+    private String query;
+    private Drink drink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drink);
 
-        // Insert toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(null);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        setToolbar();
 
-        // Get query
+        // Initialize Firebase Authentication
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+
+        checkLoggedIn();
+
         getQuery(getIntent());
 
         // Get data from api
         DrinkAsyncTask task = new DrinkAsyncTask(this);
         task.execute(query);
 
-        // Initialize Firebase Auth
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = firebaseAuth.getCurrentUser();
-        if (firebaseUser == null) {
-            // Not signed in, launch the Sign In activity
-            startActivity(new Intent(this, SignInActivity.class));
-            finish();
-            return;
-        }
+        // Initialize firebase database reference
+        dbRef = FirebaseDatabase.getInstance().getReference();
 
-        // Set firebase database reference
-        firebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-
+        // Initialize google api client
         googleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
                 .build();
     }
 
-    /*****************
-     * Show results. *
-     ****************/
+    /**
+     * Show the information of a drink.
+     */
     public void showData(final Drink drink) {
         this.drink = drink;
-        // Set the data
+        // Set the image
         ImageView imageView = (ImageView) findViewById(R.id.drinkImg);
         Picasso.with(this).load(drink.getImg()).into(imageView);
 
+        // Get and set the textviews
         TextView nameTV = (TextView) findViewById(R.id.drinkText);
         TextView categoryTV = (TextView) findViewById(R.id.categoryText);
         TextView alcoholicTV = (TextView) findViewById(R.id.alcoholicText);
@@ -117,9 +120,16 @@ public class DrinkActivity extends AppCompatActivity
             measuresTV.setText(measures);
         }
 
-        final ImageButton favButton = (ImageButton) findViewById(R.id.favButton);
-        Query query = firebaseDatabaseReference.child(firebaseUser.getUid()).child("drinks").orderByChild("id").equalTo(drink.getId());
+        setFavButton();
+    }
 
+    /**
+     * Set the favourite button, on if the drink is in the database, off otherwise.
+     */
+    private void setFavButton() {
+        final ImageButton favButton = (ImageButton) findViewById(R.id.favButton);
+        Query query = dbRef.child(firebaseUser.getUid()).child("drinks").orderByChild("id")
+                .equalTo(drink.getId());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -127,30 +137,36 @@ public class DrinkActivity extends AppCompatActivity
                     Drink dbDrink = snap.getValue(Drink.class);
                     if (dbDrink.getFav()) {
                         drink.setFav(true);
-                        favButton.setImageDrawable(getResources().getDrawable(android.R.drawable.btn_star_big_on));
+                        favButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
+                                android.R.drawable.btn_star_big_on));
                     }
                     else {
                         drink.setFav(false);
-                        favButton.setImageDrawable(getResources().getDrawable(android.R.drawable.btn_star_big_off));
+                        favButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
+                                android.R.drawable.btn_star_big_off));
                     }
-
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Don't do anything
+                Log.w("Database error", "onCancelled: db error", databaseError.toException());
             }
         });
     }
 
+    /**
+     * Add or remove a drink to/from the favourite database.
+     */
     public void addFav(View view) {
         ImageButton favButton = (ImageButton) view;
         if (drink.getFav()) {
             drink.setFav(false);
-            favButton.setImageDrawable(getResources().getDrawable(android.R.drawable.btn_star_big_off));
+            favButton.setImageDrawable(ContextCompat.getDrawable(this,
+                    android.R.drawable.btn_star_big_off));
 
-            Query query = firebaseDatabaseReference.child(firebaseUser.getUid()).child("drinks").orderByChild("id").equalTo(drink.getId());
+            Query query = dbRef.child(firebaseUser.getUid()).child("drinks")
+                               .orderByChild("id").equalTo(drink.getId());
 
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -162,22 +178,53 @@ public class DrinkActivity extends AppCompatActivity
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
+                    Log.w("Database error", "onCancelled: db error", databaseError.toException());
                 }
             });
         }
         else {
             drink.setFav(true);
-            SmallDrink smallDrink = new SmallDrink(drink.getId(), drink.getName(), drink.getImg(), drink.getFav());
-            favButton.setImageDrawable(getResources().getDrawable(android.R.drawable.btn_star_big_on));
-            firebaseDatabaseReference.child(firebaseUser.getUid()).child("drinks").push().setValue(smallDrink);
+            SmallDrink smallDrink = new SmallDrink(drink.getId(), drink.getName(), drink.getImg(),
+                                                   drink.getFav());
+            favButton.setImageDrawable(ContextCompat.getDrawable(this,
+                    android.R.drawable.btn_star_big_on));
+            dbRef.child(firebaseUser.getUid()).child("drinks").push().setValue(smallDrink);
+        }
+    }
+
+    /**
+     * Get query from search.
+     */
+    private void getQuery(Intent intent) {
+        query = "lookup.php?i=" + intent.getExtras().get("Id");
+    }
+
+
+    /**
+     * Check if the user is logged in, if not, go to sign in activity.
+     */
+    private void checkLoggedIn() {
+        if (firebaseUser == null) {
+            startActivity(new Intent(this, SignInActivity.class));
+            finish();
         }
     }
 
 
-    /********************
-     * Toolbar methods. *
-     ********************/
+    /**
+     * Toolbar method: set the toolbar.
+     */
+    private void setToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(null);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+    }
+
+    /**
+     * Toolbar method: set the search option in the toolbar.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -193,11 +240,12 @@ public class DrinkActivity extends AppCompatActivity
         return true;
     }
 
+
+    /**
+     * Toolbar method: handle toolbar item clicks.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         switch (id) {
@@ -221,13 +269,9 @@ public class DrinkActivity extends AppCompatActivity
 
     }
 
-    /**************************
-     * Get query from search. *
-     **************************/
-    private void getQuery(Intent intent) {
-        query = "lookup.php?i=" + intent.getExtras().get("Id");
-    }
-
+    /**
+     * If no connection to Google Play, show to the user.
+     */
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(String.valueOf(connectionResult), "onConnectionFailed:" + connectionResult);
