@@ -36,13 +36,11 @@ import java.util.ArrayList;
 
 class DrinkAdapter extends ArrayAdapter<SmallDrink> {
 
-
     private Context context;
     private Activity activity;
     
     private DatabaseReference dbRef;
     private String userId;
-
 
     DrinkAdapter(Activity activity, int resource, ArrayList<SmallDrink> drinks) {
         super(activity.getApplicationContext(), resource, drinks);
