@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">Lagrand_pset6</string>
+    <string name="imgdrink">imgDrink</string>
+    <string name="drink">Drink</string>
+    <string name="favstar">favStar</string>
+    <string name="alcoholic">Alcoholic</string>
+    <string name="category">Category</string>
+    <string name="glass">Glass</string>
+    <string name="instructions">Instructions</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="measures">Measures</string>
+    <string name="welcome_drinking_buddy_what_are_we_gonna_drink_today">Welcome, drinking buddy! What are we gonna drink today?</string>
+    <string name="random">Random</string>
+    <string name="non_alcoholic">Non Alcoholic</string>
+    <string name="please_sign_in_with_your_google_account_to_use_the_app">Please sign in with your google account to use the app.</string>
+    <string name="welcome_drinking_buddies">Welcome Drinking Buddies!</string>
+    <string name="rainbowcocktail">rainbowCocktail</string>
+    <string name="name">Name</string>
 </resources>

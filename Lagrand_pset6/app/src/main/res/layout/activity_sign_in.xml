@@ -13,17 +13,15 @@
         android:textStyle="bold"
         android:gravity="center"
         android:layout_marginTop="25dp"
-        android:text="Welcome Drinking Buddies!"/>
-
-
+        android:text="@string/welcome_drinking_buddies"/>
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
         app:srcCompat="@drawable/rainbow"
-        android:id="@+id/imageView" />
-
+        android:id="@+id/imageView"
+        android:contentDescription="@string/rainbowcocktail" />
 
     <TextView
         android:padding="10dp"
@@ -31,7 +29,7 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:gravity="center"
-        android:text="Please sign in with your google account to use the app."/>
+        android:text="@string/please_sign_in_with_your_google_account_to_use_the_app"/>
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"

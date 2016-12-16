@@ -19,8 +19,8 @@
         android:padding="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Welcome, drinking buddy! What are we gonna drink today?"
-        android:textSize="20dp"
+        android:text="@string/welcome_drinking_buddy_what_are_we_gonna_drink_today"
+        android:textSize="20sp"
         android:gravity="center"/>
 
     <ListView

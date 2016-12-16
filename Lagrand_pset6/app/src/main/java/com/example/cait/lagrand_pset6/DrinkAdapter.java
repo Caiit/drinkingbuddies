@@ -77,7 +77,6 @@ class DrinkAdapter extends ArrayAdapter<SmallDrink> {
                 Intent goToDrink = new Intent(context, DrinkActivity.class);
                 goToDrink.putExtra("Id", drink.getId());
                 context.startActivity(goToDrink);
-                activity.finish();
             }
         });
 
