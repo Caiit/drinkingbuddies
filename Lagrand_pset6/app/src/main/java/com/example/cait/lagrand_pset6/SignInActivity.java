@@ -72,10 +72,12 @@ public class SignInActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Sign in with google account.
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == 9001) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
@@ -90,6 +92,9 @@ public class SignInActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Authenticate firebase with google account.
+     */
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d("SignInActivity", "firebaseAuthWithGooogle:" + acct.getId());
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);

@@ -31,7 +31,11 @@
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
-        <activity android:name=".DrinkActivity"/>
+        <activity android:name=".DrinkActivity">
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".ResultActivity" />
+        </activity>
     </application>
 
 </manifest>

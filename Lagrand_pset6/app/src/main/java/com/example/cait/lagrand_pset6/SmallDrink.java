@@ -50,7 +50,6 @@ class SmallDrink {
         return fav;
     }
 
-
     /**
      * The set methods.
      */

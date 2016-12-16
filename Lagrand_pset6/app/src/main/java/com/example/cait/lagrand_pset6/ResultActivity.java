@@ -161,14 +161,12 @@ public class ResultActivity extends AppCompatActivity
                 if (((RadioButton)findViewById(R.id.categoryButton)).isChecked()) {
                     groupItems = CATEGORIES;
                     tag = "c";
-                }
-                else {
+                } else {
                     groupItems = GLASSES;
                     tag ="g";
                 }
 
                 group.setTag(tag);
-
                 group.removeAllViews();
 
                 // Set specific filter buttons
@@ -181,8 +179,7 @@ public class ResultActivity extends AppCompatActivity
                     group.addView(itemButton);
                 }
             }
-        }
-        else {
+        } else {
             group.setVisibility(View.GONE);
         }
 
