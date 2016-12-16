@@ -28,6 +28,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
  * Native App Studio Assignment 6
  *
  * The SignInActivity let the user sign in using a google account.
+ * https://codelabs.developers.google.com/codelabs/firebase-android/#5
  */
 
 public class SignInActivity extends AppCompatActivity
