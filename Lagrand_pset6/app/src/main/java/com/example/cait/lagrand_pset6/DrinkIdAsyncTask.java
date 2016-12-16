@@ -2,6 +2,7 @@ package com.example.cait.lagrand_pset6;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -37,27 +38,25 @@ class DrinkIdAsyncTask extends AsyncTask<String, Integer, String> {
 
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-
-        if (result.length() == 0) {
-            Toast.makeText(context, "No data was found", Toast.LENGTH_SHORT).show();
-        }
-        else {
-            ArrayList<SmallDrink> drinks = new ArrayList<>();
-            try {
-                JSONObject respObj = new JSONObject(result);
-                JSONArray drinksObj = respObj.getJSONArray("drinks");
-                for (int i = 0; i < drinksObj.length(); i++) {
-                    JSONObject drink = drinksObj.getJSONObject(i);
-                    int id = Integer.parseInt(drink.getString("idDrink"));
-                    String name = drink.getString("strDrink");
-                    String img = drink.getString("strDrinkThumb");
-                    drinks.add(new SmallDrink(id, name, img, false));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+        ArrayList<SmallDrink> drinks = new ArrayList<>();
+        try {
+            JSONObject respObj = new JSONObject(result);
+            if (respObj.getString("drinks") == "null") {
+                Toast.makeText(context, "No data was found", Toast.LENGTH_SHORT).show();
+                return;
             }
-
-            this.activity.showData(drinks);
+            JSONArray drinksObj = respObj.getJSONArray("drinks");
+            for (int i = 0; i < drinksObj.length(); i++) {
+                JSONObject drink = drinksObj.getJSONObject(i);
+                int id = Integer.parseInt(drink.getString("idDrink"));
+                String name = drink.getString("strDrink");
+                String img = drink.getString("strDrinkThumb");
+                drinks.add(new SmallDrink(id, name, img, false));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
+        this.activity.showData(drinks);
     }
 }

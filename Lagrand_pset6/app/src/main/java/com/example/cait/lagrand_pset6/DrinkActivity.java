@@ -205,6 +205,7 @@ public class DrinkActivity extends AppCompatActivity
                 firebaseAuth.signOut();
                 Auth.GoogleSignInApi.signOut(googleApiClient);
                 startActivity(new Intent(this, SignInActivity.class));
+                finish();
                 return true;
             case android.R.id.home:
                 startActivity(new Intent(this, MainActivity.class));

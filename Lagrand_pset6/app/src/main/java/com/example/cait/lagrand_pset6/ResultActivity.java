@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -142,6 +143,7 @@ public class ResultActivity extends AppCompatActivity
                 firebaseAuth.signOut();
                 Auth.GoogleSignInApi.signOut(googleApiClient);
                 startActivity(new Intent(this, SignInActivity.class));
+                finish();
                 return true;
             case android.R.id.home:
                 startActivity(new Intent(this, MainActivity.class));
@@ -184,7 +186,7 @@ public class ResultActivity extends AppCompatActivity
         // Get type of search from radio buttons
         RadioButton button = (RadioButton) view;
         RadioGroup group = (RadioGroup) findViewById(R.id.extraGroupButton);
-        String query = (String) button.getTag();
+        query = (String) button.getTag();
 
         if ((((RadioButton)findViewById(R.id.categoryButton)).isChecked() ||
                 ((RadioButton)findViewById(R.id.glassButton)).isChecked())) {

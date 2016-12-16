@@ -142,9 +142,15 @@ public class MainActivity extends AppCompatActivity
                 Auth.GoogleSignInApi.signOut(googleApiClient);
                 userName = "ANONYMOUS";
                 startActivity(new Intent(this, SignInActivity.class));
+                finish();
+                return true;
+            case android.R.id.home:
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
                 return true;
             case R.id.advancedSearch:
                 startActivity(new Intent(this, ResultActivity.class));
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

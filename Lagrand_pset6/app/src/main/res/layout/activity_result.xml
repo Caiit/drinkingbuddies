@@ -16,84 +16,88 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:id="@+id/advancedSearchView"
-        android:layout_marginTop="20dp"
         android:layout_marginLeft="10dp">
-
-        <RadioGroup
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checkedButton="@+id/randomButton"
-            android:id="@+id/searchRadioGroup">
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Random"
-                android:id="@+id/randomButton"
-                android:tag="random.php"
-                android:checked="false"
-                android:onClick="handleSearch"/>
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Alcoholic"
-                android:id="@+id/alcoholicButton"
-                android:tag="filter.php?a=Alcoholic"
-                android:checked="false"
-                android:onClick="handleSearch"/>
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Non Alcoholic"
-                android:id="@+id/nonAlcoholicButton"
-                android:tag="filter.php?a=Non Alcoholic"
-                android:checked="false"
-                android:onClick="handleSearch"/>
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Category"
-                android:id="@+id/categoryButton"
-                android:tag="c"
-                android:checked="false"
-                android:onClick="handleSearch"/>
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Glass"
-                android:id="@+id/glassButton"
-                android:tag="g"
-                android:checked="false"
-                android:onClick="handleSearch"/>
-
-
-        </RadioGroup>
-
-        <ScrollView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:id="@+id/advancedSearchScrollView">
+            android:orientation="horizontal">
 
             <RadioGroup
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:visibility="gone"
-                android:id="@+id/extraGroupButton"
-                android:layout_marginBottom="20dp"/>
+                android:checkedButton="@+id/randomButton"
+                android:id="@+id/searchRadioGroup">
 
-        </ScrollView>
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Random"
+                    android:id="@+id/randomButton"
+                    android:tag="random.php"
+                    android:checked="false"
+                    android:onClick="handleSearch"/>
+
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Alcoholic"
+                    android:id="@+id/alcoholicButton"
+                    android:tag="filter.php?a=Alcoholic"
+                    android:checked="false"
+                    android:onClick="handleSearch"/>
+
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Non Alcoholic"
+                    android:id="@+id/nonAlcoholicButton"
+                    android:tag="filter.php?a=Non Alcoholic"
+                    android:checked="false"
+                    android:onClick="handleSearch"/>
+
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Category"
+                    android:id="@+id/categoryButton"
+                    android:tag="c"
+                    android:checked="false"
+                    android:onClick="handleSearch"/>
+
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Glass"
+                    android:id="@+id/glassButton"
+                    android:tag="g"
+                    android:checked="false"
+                    android:onClick="handleSearch"/>
+
+
+            </RadioGroup>
+
+            <ScrollView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:id="@+id/advancedSearchScrollView">
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:visibility="gone"
+                    android:id="@+id/extraGroupButton"
+                    android:layout_marginBottom="20dp"/>
+
+            </ScrollView>
+
+        </LinearLayout>
 
     </LinearLayout>
-
 
     <ListView
         android:layout_width="match_parent"
